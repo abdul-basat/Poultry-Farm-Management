@@ -2,6 +2,8 @@
 
 A modern, bilingual (English / Urdu) web application for managing day-to-day poultry-farm operations. Built with **React&nbsp;+&nbsp;TypeScript**, **Vite**, and **Tailwind CSS**.
 
+# Project is live on:
+[Poultry Farm Management](URL)
 ## ✨ Features
 
 - 📊 Dashboard with live statistics & charts
