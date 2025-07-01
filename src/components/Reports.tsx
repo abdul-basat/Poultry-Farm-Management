@@ -4,7 +4,7 @@ import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import NastaliqTTF from '../assets/fonts/Mehr_Nastaliq_Web v. 2.0.ttf';
+import NastaliqTTF from '../assets/fonts/Mehr_Nastaliq_Web.ttf?url';
 import { formatCurrency } from '../utils/format';
 
 declare module 'jspdf' {

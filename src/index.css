@@ -4,8 +4,8 @@
 
 @font-face {
   font-family: 'MehrNastaliqWeb';
-  src: url("./assets/fonts/Mehr_Nastaliq_Web%20v.2.0.woff") format('woff'),
-       url("./assets/fonts/Mehr_Nastaliq_Web%20v.%202.0.ttf") format('truetype');
+  src: url("./assets/fonts/Mehr_Nastaliq_Web.woff") format('woff'),
+       url("./assets/fonts/Mehr_Nastaliq_Web.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
