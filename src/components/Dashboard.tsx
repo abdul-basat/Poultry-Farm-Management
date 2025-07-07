@@ -14,11 +14,13 @@ import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { format, subDays, startOfDay } from 'date-fns';
 import { formatCurrency } from '../utils/format';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
   const { stats, mortalities, sales, feedMedicines, extraExpenses } = useData();
   const { t, language } = useLanguage();
   const [showExpensesModal, setShowExpensesModal] = useState(false);
+  const navigate = useNavigate();
 
   // Prepare chart data
   const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -100,18 +102,24 @@ const Dashboard: React.FC = () => {
           value={stats.totalChicks.toLocaleString()}
           icon={Users}
           color="bg-blue-500"
+          onClick={() => navigate('/arrivals')}
+          clickable
         />
         <StatCard
           title={t('currentStock')}
           value={stats.currentStock.toLocaleString()}
           icon={Package}
           color="bg-green-500"
+          onClick={() => navigate('/arrivals')}
+          clickable
         />
         <StatCard
           title={t('totalMortality')}
           value={stats.totalMortality.toLocaleString()}
           icon={AlertTriangle}
           color="bg-red-500"
+          onClick={() => navigate('/mortality')}
+          clickable
         />
         <StatCard
           title={t('mortalityRate')}
