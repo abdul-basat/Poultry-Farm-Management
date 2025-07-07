@@ -10,6 +10,7 @@ import Mortality from './components/Mortality';
 import FeedMedicine from './components/FeedMedicine';
 import Sales from './components/Sales';
 import Reports from './components/Reports';
+import ExtraExpenses from './components/ExtraExpenses';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/mortality" element={<Mortality />} />
                 <Route path="/feed-medicine" element={<FeedMedicine />} />
                 <Route path="/sales" element={<Sales />} />
+                <Route path="/extra-expenses" element={<ExtraExpenses />} />
                 <Route path="/reports" element={<Reports />} />
               </Routes>
             </Layout>

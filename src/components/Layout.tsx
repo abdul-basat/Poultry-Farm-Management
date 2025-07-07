@@ -32,6 +32,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: t('chickArrival'), href: '/arrivals', icon: Plus, color: 'text-green-600' },
     { name: t('mortality'), href: '/mortality', icon: Skull, color: 'text-red-600' },
     { name: t('feedMedicine'), href: '/feed-medicine', icon: ShoppingCart, color: 'text-orange-600' },
+    { name: t('extraExpenses'), href: '/extra-expenses', icon: FileText, color: 'text-pink-600' },
     { name: t('sales'), href: '/sales', icon: TrendingUp, color: 'text-purple-600' },
     { name: t('reports'), href: '/reports', icon: FileText, color: 'text-indigo-600' },
   ];

@@ -48,6 +48,16 @@ export interface DashboardStats {
   totalFeedCost: number;
   totalMedicineCost: number;
   mortalityRate: number;
+  totalExpenses: number;
+  perChickExpenses: number;
+}
+
+export interface ExtraExpense {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  createdAt: string;
 }
 
 export type Language = 'en' | 'ur';

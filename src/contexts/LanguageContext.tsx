@@ -15,7 +15,9 @@ const translations = {
     mortality: 'Mortality Log',
     feedMedicine: 'Feed & Medicine',
     sales: 'Sales Management',
+    extraExpenses: 'Extra Expenses',
     reports: 'Reports',
+    
     
     // Dashboard
     totalChicks: 'Total Chicks',
@@ -72,6 +74,8 @@ const translations = {
     viewDetails: 'View Details',
     downloadPDF: 'Download PDF',
     generateReport: 'Generate Report',
+    totalExpenses: 'Total Expenses',
+    perChickExpenses: 'Per Chick Expenses',
   },
   ur: {
     // Navigation
@@ -81,6 +85,7 @@ const translations = {
     feedMedicine: 'فیڈ اور دوائی',
     sales: 'چوزوں کا بکنا',
     reports: 'رپورٹس',
+    extraExpenses: 'اضافی اخراجات',
     
     // Dashboard
     totalChicks: 'کل چوزے',
@@ -137,6 +142,8 @@ const translations = {
     viewDetails: 'تفصیلات دیکھیں',
     downloadPDF: 'پی ڈی ایف ڈاؤن لوڈ کریں',
     generateReport: 'رپورٹ بنائیں',
+    totalExpenses: 'کل اخراجات',
+    perChickExpenses: 'فی چوزہ خرچ',
   }
 };
 

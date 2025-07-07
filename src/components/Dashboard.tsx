@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -16,8 +16,9 @@ import { format, subDays, startOfDay } from 'date-fns';
 import { formatCurrency } from '../utils/format';
 
 const Dashboard: React.FC = () => {
-  const { stats, mortalities, sales, feedMedicines } = useData();
+  const { stats, mortalities, sales, feedMedicines, extraExpenses } = useData();
   const { t, language } = useLanguage();
+  const [showExpensesModal, setShowExpensesModal] = useState(false);
 
   // Prepare chart data
   const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -44,28 +45,46 @@ const Dashboard: React.FC = () => {
     { name: t('medicine'), value: stats.totalMedicineCost, color: '#ef4444' },
   ];
 
+  // Combine all expenses for modal table
+  const allExpenses = [
+    ...feedMedicines.map(fm => ({
+      id: fm.id,
+      date: fm.date,
+      type: fm.type === 'feed' ? t('feed') : t('medicine'),
+      description: fm.name,
+      amount: fm.cost,
+      isExtra: false,
+    })),
+    ...extraExpenses.map(exp => ({
+      id: exp.id,
+      date: exp.date,
+      type: t('extra'),
+      description: exp.description,
+      amount: exp.amount,
+      isExtra: true,
+    })),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+
   const StatCard: React.FC<{
     title: string;
     value: string | number;
     icon: React.ElementType;
     color: string;
     trend?: number;
-  }> = ({ title, value, icon: Icon, color, trend }) => (
-    <div className="stats-card">
+    onClick?: () => void;
+    clickable?: boolean;
+  }> = ({ title, value, icon: Icon, color, trend, onClick, clickable }) => (
+    <div
+      className={`stats-card ${clickable ? 'cursor-pointer hover:shadow-lg transition' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-center">
-        <div className={`flex-shrink-0 p-3 rounded-lg ${color}`}>
-          <Icon className="h-6 w-6 text-white" />
-        </div>
+        <div className={`flex-shrink-0 p-3 rounded-lg ${color}`}> <Icon className="h-6 w-6 text-white" /> </div>
         <div className="ml-4 flex-1">
-          <p className={`text-sm font-medium text-gray-600 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
-            {title}
-          </p>
+          <p className={`text-sm font-medium text-gray-600 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>{title}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
           {trend !== undefined && (
-            <div className={`flex items-center text-sm ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {trend >= 0 ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
-              {Math.abs(trend)}%
-            </div>
+            <div className={`flex items-center text-sm ${trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>{trend >= 0 ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}{Math.abs(trend)}%</div>
           )}
         </div>
       </div>
@@ -126,6 +145,20 @@ const Dashboard: React.FC = () => {
           value={formatCurrency(language, stats.totalFeedCost)}
           icon={ShoppingCart}
           color="bg-teal-500"
+        />
+        <StatCard
+          title={t('totalExpenses')}
+          value={formatCurrency(language, stats.totalExpenses)}
+          icon={ShoppingCart}
+          color="bg-pink-500"
+          onClick={() => setShowExpensesModal(true)}
+          clickable
+        />
+        <StatCard
+          title={t('perChickExpenses')}
+          value={formatCurrency(language, stats.perChickExpenses)}
+          icon={Users}
+          color="bg-gray-500"
         />
       </div>
 
@@ -210,6 +243,50 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Expenses Modal */}
+      {showExpensesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-full max-w-3xl relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+              onClick={() => setShowExpensesModal(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-bold mb-4">{t('totalExpenses')} {language === 'ur' ? 'کی تفصیل' : 'Details'}</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-100 dark:bg-gray-700">
+                    <th className="px-4 py-3 text-left">{language === 'ur' ? 'تاریخ' : 'Date'}</th>
+                    <th className="px-4 py-3 text-left">{language === 'ur' ? 'قسم' : 'Type'}</th>
+                    <th className="px-4 py-3 text-left">{language === 'ur' ? 'تفصیل' : 'Description'}</th>
+                    <th className="px-4 py-3 text-left">{language === 'ur' ? 'رقم' : 'Amount'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allExpenses.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="text-center py-6 text-gray-400">{language === 'ur' ? 'کوئی ریکارڈ نہیں' : 'No records found'}</td>
+                    </tr>
+                  ) : (
+                    allExpenses.map(exp => (
+                      <tr key={exp.id} className={exp.isExtra ? 'bg-pink-50 dark:bg-pink-900' : ''}>
+                        <td className="px-4 py-3 whitespace-nowrap">{exp.date}</td>
+                        <td className="px-4 py-3">{exp.type}</td>
+                        <td className="px-4 py-3">{exp.description}</td>
+                        <td className="px-4 py-3 font-semibold">{exp.amount.toLocaleString()} {language === 'ur' ? 'روپے' : 'PKR'}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
