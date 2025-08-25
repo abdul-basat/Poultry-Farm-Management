@@ -51,6 +51,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     mortalityRate: 0,
     totalExpenses: 0,
     perChickExpenses: 0,
+    dailyChickPrices: [],
   });
   const [extraExpenses, setExtraExpenses] = useState<ExtraExpense[]>([]);
 
@@ -103,7 +104,43 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const totalExtraExpenses = extraExpenses.reduce((sum, exp) => sum + exp.amount, 0);
     const mortalityRate = totalChicks > 0 ? (totalMortality / totalChicks) * 100 : 0;
     const totalExpenses = totalFeedCost + totalMedicineCost + totalExtraExpenses;
-    const perChickExpenses = totalChicks > 0 ? totalExpenses / totalChicks : 0;
+    
+    // Calculate per-chick expenses with detailed breakdown
+    const perChickExpensesDetail = {
+      totalCost: totalExpenses,
+      feedCost: totalFeedCost,
+      medicineCost: totalMedicineCost,
+      extraExpenses: totalExtraExpenses,
+      mortalityCost: totalMortality,
+      currentStock,
+      perChickPrice: totalChicks > 0 ? totalExpenses / totalChicks : 0,
+      calculationDate: new Date().toISOString().split('T')[0],
+    };
+    
+    // Get existing daily prices from state
+    const existingDailyPrices = [...stats.dailyChickPrices];
+    
+    // Add new price for today if it's not already there
+    const today = new Date().toISOString().split('T')[0];
+    const todayIndex = existingDailyPrices.findIndex(p => p.date === today);
+    
+    if (todayIndex > -1) {
+      // Update existing today's entry
+      existingDailyPrices[todayIndex] = {
+        date: today,
+        stats: perChickExpensesDetail
+      };
+    } else {
+      // Add new today's entry and remove oldest if we have more than 30 days
+      existingDailyPrices.push({
+        date: today,
+        stats: perChickExpensesDetail
+      });
+      
+      if (existingDailyPrices.length > 30) {
+        existingDailyPrices.shift();
+      }
+    }
 
     setStats({
       totalChicks,
@@ -115,10 +152,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       totalFeedCost,
       totalMedicineCost,
       totalExpenses,
-      perChickExpenses,
+      perChickExpenses: perChickExpensesDetail.perChickPrice,
       mortalityRate,
+      dailyChickPrices: existingDailyPrices,
     });
-  }, [chickArrivals, mortalities, feedMedicines, sales, extraExpenses]);
+  }, [chickArrivals, mortalities, feedMedicines, sales, extraExpenses, extraExpenses]);
 
   // CRUD operations
   const addChickArrival = (arrival: Omit<ChickArrival, 'id' | 'createdAt'>) => {

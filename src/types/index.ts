@@ -38,6 +38,22 @@ export interface Sale {
   createdAt: string;
 }
 
+export interface PerChickExpenses {
+  totalCost: number;
+  feedCost: number;
+  medicineCost: number;
+  extraExpenses: number;
+  mortalityCost: number;
+  currentStock: number;
+  perChickPrice: number;
+  calculationDate: string;
+}
+
+export interface DailyChickPrice {
+  date: string;
+  stats: PerChickExpenses;
+}
+
 export interface DashboardStats {
   totalChicks: number;
   totalMortality: number;
@@ -50,6 +66,7 @@ export interface DashboardStats {
   mortalityRate: number;
   totalExpenses: number;
   perChickExpenses: number;
+  dailyChickPrices: DailyChickPrice[];
 }
 
 export interface ExtraExpense {

@@ -35,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: t('extraExpenses'), href: '/extra-expenses', icon: FileText, color: 'text-pink-600' },
     { name: t('sales'), href: '/sales', icon: TrendingUp, color: 'text-purple-600' },
     { name: t('reports'), href: '/reports', icon: FileText, color: 'text-indigo-600' },
+    { name: t('chickPriceTracker'), href: '/chick-price', icon: TrendingUp, color: 'text-blue-600' },  // New navigation item for ChickPriceTracker
   ];
 
   useEffect(() => {

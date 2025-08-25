@@ -17,7 +17,7 @@ const translations = {
     sales: 'Sales Management',
     extraExpenses: 'Extra Expenses',
     reports: 'Reports',
-    
+    chickPriceTracker: 'Chick Price Tracker',  // New translation key
     
     // Dashboard
     totalChicks: 'Total Chicks',
@@ -86,6 +86,7 @@ const translations = {
     sales: 'چوزوں کا بکنا',
     reports: 'رپورٹس',
     extraExpenses: 'اضافی اخراجات',
+    chickPriceTracker: 'چوزہ قیمت ٹریکر',  // New translation key
     
     // Dashboard
     totalChicks: 'کل چوزے',
