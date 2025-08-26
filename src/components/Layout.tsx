@@ -11,7 +11,8 @@ import {
   X,
   Languages,
   Moon,
-  Sun
+  Sun,
+  HelpCircle
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -86,6 +87,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+          <div className="px-4 py-4 border-t border-gray-200">
+            <Link
+              to="/help"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              <HelpCircle className="mr-3 h-5 w-5 text-gray-500" />
+              <span className={language === 'ur' ? 'urdu-text' : 'english-text'}>
+                {t('helpAndSupport')}
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -122,6 +135,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+          <div className="mt-auto px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+            <Link
+              to="/help"
+              className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                location.pathname === '/help'
+                  ? 'bg-primary-50 text-primary-700'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              <HelpCircle className="mr-3 h-5 w-5 text-gray-500" />
+              <span className={language === 'ur' ? 'urdu-text' : 'english-text'}>
+                {t('helpAndSupport')}
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
 

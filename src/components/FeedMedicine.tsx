@@ -14,6 +14,7 @@ const FeedMedicine: React.FC = () => {
     date: new Date().toISOString().split('T')[0],
     type: 'feed' as 'feed' | 'medicine',
     name: '',
+    quantity: '',
     cost: '',
     supplier: '',
   });
@@ -24,6 +25,7 @@ const FeedMedicine: React.FC = () => {
       date: formData.date,
       type: formData.type,
       name: formData.name,
+      quantity: parseFloat(formData.quantity),
       cost: parseFloat(formData.cost),
       supplier: formData.supplier || undefined,
     };
@@ -40,6 +42,7 @@ const FeedMedicine: React.FC = () => {
       date: new Date().toISOString().split('T')[0],
       type: 'feed',
       name: '',
+      quantity: '',
       cost: '',
       supplier: '',
     });
@@ -51,6 +54,7 @@ const FeedMedicine: React.FC = () => {
       date: item.date,
       type: item.type,
       name: item.name,
+      quantity: item.quantity.toString(),
       cost: item.cost.toString(),
       supplier: item.supplier || '',
     });
@@ -126,6 +130,7 @@ const FeedMedicine: React.FC = () => {
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('date')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('type')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('name')}</th>
+              <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('quantity')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('cost')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('supplier')}</th>
               <th>Actions</th>
@@ -160,6 +165,7 @@ const FeedMedicine: React.FC = () => {
                   </span>
                 </td>
                 <td className="font-medium">{item.name}</td>
+                <td>{item.quantity}</td>
                 <td>{formatCurrency(language, item.cost)}</td>
                 <td>{item.supplier || '-'}</td>
                 <td>
@@ -233,6 +239,20 @@ const FeedMedicine: React.FC = () => {
                 </div>
                 <div>
                   <label className={`block text-sm font-medium text-gray-700 mb-1 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
+                    {t('quantity')}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.quantity}
+                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                    className="input-field"
+                    required
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-medium text-gray-700 mb-1 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
                     {t('cost')} ({language === 'ur' ? 'روپے' : 'PKR'})
                   </label>
                   <input
@@ -266,6 +286,7 @@ const FeedMedicine: React.FC = () => {
                         date: new Date().toISOString().split('T')[0],
                         type: 'feed',
                         name: '',
+                        quantity: '',
                         cost: '',
                         supplier: '',
                       });

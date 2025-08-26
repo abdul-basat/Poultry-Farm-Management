@@ -21,6 +21,7 @@ export interface FeedMedicine {
   date: string;
   type: 'feed' | 'medicine';
   name: string;
+  quantity: number;
   cost: number;
   supplier?: string;
   createdAt: string;
