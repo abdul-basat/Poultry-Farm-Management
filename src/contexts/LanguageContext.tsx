@@ -17,7 +17,7 @@ const translations = {
     sales: 'Sales Management',
     extraExpenses: 'Extra Expenses',
     reports: 'Reports',
-    chickPriceTracker: 'Chick Price Tracker'
+    chickPriceTracker: 'Chick Price Tracker',
     
     // Dashboard
     totalChicks: 'Total Chicks',
@@ -78,14 +78,14 @@ const translations = {
     addExtraExpense: 'Add Extra Expense',
     totalExtraExpenses: 'Total Extra Expenses',
     currencyPKR: 'PKR',
-      records: 'records',
-      noRecordsFound: 'No records found',
-      editExpense: 'Edit Expense',
-      addNewExpense: 'Add New Expense',
-      update: 'Update',
-      save: 'Save',
-      cancel: 'Cancel',
-      deleteExpenseConfirmation: 'Are you sure you want to delete this expense?',
+    records: 'records',
+    noRecordsFound: 'No records found',
+    editExpense: 'Edit Expense',
+    addNewExpense: 'Add New Expense',
+    update: 'Update',
+    save: 'Save',
+    cancel: 'Cancel',
+    deleteExpenseConfirmation: 'Are you sure you want to delete this expense?',
     
     // Actions
     viewDetails: 'View Details',
@@ -105,7 +105,6 @@ const translations = {
     mortalityMetrics: 'Mortality Metrics',
     totalFeedCost: 'Total Feed Cost',
     totalMedicineCost: 'Total Medicine Cost',
-    totalExtraExpenses: 'Total Extra Expenses',
     avgPerChick: 'Average Per Chick',
     extra: 'Extra',
     noDataAvailable: 'No data available',
@@ -121,7 +120,7 @@ const translations = {
     sales: 'چوزوں کا بکنا',
     reports: 'رپورٹس',
     extraExpenses: 'اضافی اخراجات',
-    chickPriceTracker: 'چوزہ قیمت ٹریکر',  // New translation key
+    chickPriceTracker: 'چوزہ قیمت ٹریکر',
     
     // Dashboard
     totalChicks: 'کل چوزے',
@@ -182,14 +181,14 @@ const translations = {
     addExtraExpense: 'اضافی اخراجات شامل کریں',
     totalExtraExpenses: 'کل اضافی اخراجات',
     currencyPKR: 'روپے',
-      records: 'ریکارڈز',
-      noRecordsFound: 'ریکارڈ موجود نہیں',
-      editExpense: 'اخراجات ترمیم کریں',
-      addNewExpense: 'نیا اخراجات شامل کریں',
-      update: 'اپ ڈیٹ کریں',
-      save: 'محفوظ کریں',
-      cancel: 'منسوخ کریں',
-      deleteExpenseConfirmation: 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟',
+    records: 'ریکارڈز',
+    noRecordsFound: 'ریکارڈ موجود نہیں',
+    editExpense: 'اخراجات ترمیم کریں',
+    addNewExpense: 'نیا اخراجات شامل کریں',
+    update: 'اپ ڈیٹ کریں',
+    save: 'محفوظ کریں',
+    cancel: 'منسوخ کریں',
+    deleteExpenseConfirmation: 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟',
     
     // Actions
     viewDetails: 'تفصیلات دیکھیں',
@@ -209,7 +208,6 @@ const translations = {
     mortalityMetrics: 'اموات کے اعداد و شمار',
     totalFeedCost: 'کل فیڈ کی لاگت',
     totalMedicineCost: 'کل دوائی کی لاگت',
-    totalExtraExpenses: 'کل اضافی اخراجات',
     avgPerChick: 'فی چوزہ اوسط',
     extra: 'اضافی',
     noDataAvailable: 'کوئی ڈیٹا دستیاب نہیں',
