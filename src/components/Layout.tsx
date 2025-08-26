@@ -11,7 +11,8 @@ import {
   X,
   Languages,
   Moon,
-  Sun
+  Sun,
+  HelpCircle
 } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { useTheme } from '../hooks/useTheme';
@@ -36,6 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: t('sales'), href: '/sales', icon: TrendingUp, color: 'text-purple-600' },
     { name: t('reports'), href: '/reports', icon: FileText, color: 'text-indigo-600' },
     { name: t('chickPriceTracker'), href: '/chick-price', icon: TrendingUp, color: 'text-blue-600' },  // New navigation item for ChickPriceTracker
+    { name: t('help'), href: '/help', icon: HelpCircle, color: 'text-gray-600' },
   ];
 
   useEffect(() => {
