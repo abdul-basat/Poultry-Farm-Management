@@ -110,8 +110,8 @@ const ChickArrivals: React.FC = () => {
                   </div>
                 </td>
                 <td className="font-medium">{arrival.batchNumber}</td>
-                <td>{arrival.price ? `${language === 'ur' ? 'روپے' : 'PKR'} ${arrival.price.toLocaleString()}` : '-'}</td>
                 <td>{arrival.quantity.toLocaleString()}</td>
+                <td>{arrival.price ? `${language === 'ur' ? 'روپے' : 'PKR'} ${arrival.price.toLocaleString()}` : '-'}</td>
                 <td>{arrival.source || '-'}</td>
                 <td>
                   <div className="flex items-center gap-2">
