@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
-import { useData } from '../contexts/DataContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useData } from '../hooks/useData';
+import { useLanguage } from '../hooks/useLanguage';
 import { ChickArrival } from '../types';
 
 const ChickArrivals: React.FC = () => {
@@ -94,8 +94,8 @@ const ChickArrivals: React.FC = () => {
             <tr>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('date')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('batchNumber')}</th>
-              <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('quantity')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('price')}</th>
+              <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('quantity')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('source')}</th>
               <th>Actions</th>
             </tr>
@@ -110,8 +110,8 @@ const ChickArrivals: React.FC = () => {
                   </div>
                 </td>
                 <td className="font-medium">{arrival.batchNumber}</td>
+                <td>{arrival.price && arrival.quantity ? `${language === 'ur' ? 'روپے' : 'PKR'} ${(arrival.price / arrival.quantity).toFixed(2)}` : '-'}</td>
                 <td>{arrival.quantity.toLocaleString()}</td>
-                <td>{arrival.price ? `${language === 'ur' ? 'روپے' : 'PKR'} ${arrival.price.toLocaleString()}` : '-'}</td>
                 <td>{arrival.source || '-'}</td>
                 <td>
                   <div className="flex items-center gap-2">

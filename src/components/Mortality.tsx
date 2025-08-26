@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Calendar, AlertTriangle } from 'lucide-react';
-import { useData } from '../contexts/DataContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useData } from '../hooks/useData';
+import { useLanguage } from '../hooks/useLanguage';
 import { Mortality as MortalityType } from '../types';
 
 const Mortality: React.FC = () => {

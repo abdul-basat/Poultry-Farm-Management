@@ -1,7 +1,7 @@
 import React from 'react';
-import { useData } from '../contexts/DataContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import { DailyChickPrice, PerChickExpenses } from '../types';
+import { useData } from '../hooks/useData';
+import { useLanguage } from '../hooks/useLanguage';
+import { DailyChickPrice } from '../types';
 import { Calendar } from 'lucide-react';
 
 const ChickPriceTracker: React.FC = () => {

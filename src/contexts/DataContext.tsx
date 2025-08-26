@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { ChickArrival, Mortality, FeedMedicine, Sale, DashboardStats, ExtraExpense } from '../types';
 
 interface DataContextType {
@@ -30,7 +30,7 @@ interface DataContextType {
   deleteExtraExpense: (id: string) => void;
 }
 
-const DataContext = createContext<DataContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -93,71 +93,67 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Calculate stats whenever data changes
   useEffect(() => {
-    const totalChicks = chickArrivals.reduce((sum, arrival) => sum + arrival.quantity, 0);
-    const totalMortality = mortalities.reduce((sum, mortality) => sum + mortality.quantity, 0);
-    const totalSalesQuantity = sales.reduce((sum, sale) => sum + sale.quantity, 0);
-    const currentStock = totalChicks - totalMortality - totalSalesQuantity;
-    const totalRevenue = sales.reduce((sum, sale) => sum + sale.amountReceived, 0);
-    const totalOutstanding = sales.reduce((sum, sale) => sum + sale.outstandingBalance, 0);
-    const totalArrivalCost = chickArrivals.reduce((sum, arrival) => sum + (arrival.price || 0), 0);
-    const totalFeedCost = feedMedicines.filter(item => item.type === 'feed').reduce((sum, item) => sum + item.cost, 0);
-    const totalMedicineCost = feedMedicines.filter(item => item.type === 'medicine').reduce((sum, item) => sum + item.cost, 0);
-    const totalExtraExpenses = extraExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-    const mortalityRate = totalChicks > 0 ? (totalMortality / totalChicks) * 100 : 0;
-    const totalExpenses = totalArrivalCost + totalFeedCost + totalMedicineCost + totalExtraExpenses;
-    
-    // Calculate per-chick expenses with detailed breakdown
-    const perChickExpensesDetail = {
-      totalCost: totalExpenses,
-      feedCost: totalFeedCost,
-      medicineCost: totalMedicineCost,
-      extraExpenses: totalExtraExpenses,
-      mortalityCost: totalMortality,
-      currentStock,
-      perChickPrice: totalChicks > 0 ? totalExpenses / totalChicks : 0,
-      calculationDate: new Date().toISOString().split('T')[0],
-    };
-    
-    // Get existing daily prices from state
-    const existingDailyPrices = [...stats.dailyChickPrices];
-    
-    // Add new price for today if it's not already there
-    const today = new Date().toISOString().split('T')[0];
-    const todayIndex = existingDailyPrices.findIndex(p => p.date === today);
-    
-    if (todayIndex > -1) {
-      // Update existing today's entry
-      existingDailyPrices[todayIndex] = {
-        date: today,
-        stats: perChickExpensesDetail
-      };
-    } else {
-      // Add new today's entry and remove oldest if we have more than 30 days
-      existingDailyPrices.push({
-        date: today,
-        stats: perChickExpensesDetail
-      });
-      
-      if (existingDailyPrices.length > 30) {
-        existingDailyPrices.shift();
-      }
-    }
+    setStats(prevStats => {
+      const totalChicks = chickArrivals.reduce((sum, arrival) => sum + arrival.quantity, 0);
+      const totalMortality = mortalities.reduce((sum, mortality) => sum + mortality.quantity, 0);
+      const totalSalesQuantity = sales.reduce((sum, sale) => sum + sale.quantity, 0);
+      const currentStock = totalChicks - totalMortality - totalSalesQuantity;
+      const totalRevenue = sales.reduce((sum, sale) => sum + sale.amountReceived, 0);
+      const totalOutstanding = sales.reduce((sum, sale) => sum + sale.outstandingBalance, 0);
+      // Correctly calculate total arrival cost by summing the price, which is the total cost for the batch.
+      const totalArrivalCost = chickArrivals.reduce((sum, arrival) => sum + (arrival.price || 0), 0);
+      const totalFeedCost = feedMedicines.filter(item => item.type === 'feed').reduce((sum, item) => sum + item.cost, 0);
+      const totalMedicineCost = feedMedicines.filter(item => item.type === 'medicine').reduce((sum, item) => sum + item.cost, 0);
+      const totalExtraExpenses = extraExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const mortalityRate = totalChicks > 0 ? (totalMortality / totalChicks) * 100 : 0;
+      const totalExpenses = totalArrivalCost + totalFeedCost + totalMedicineCost + totalExtraExpenses;
 
-    setStats({
-      totalChicks,
-      totalMortality,
-      currentStock,
-      totalSales: totalSalesQuantity,
-      totalRevenue,
-      totalOutstanding,
-      totalFeedCost,
-      totalMedicineCost,
-      totalExpenses,
-      perChickExpenses: perChickExpensesDetail.perChickPrice,
-      mortalityRate,
-      dailyChickPrices: existingDailyPrices,
+      const perChickExpensesDetail = {
+        totalCost: totalExpenses,
+        feedCost: totalFeedCost,
+        medicineCost: totalMedicineCost,
+        extraExpenses: totalExtraExpenses,
+        mortalityCost: totalMortality,
+        currentStock,
+        perChickPrice: currentStock > 0 ? totalExpenses / currentStock : 0,
+        calculationDate: new Date().toISOString().split('T')[0],
+      };
+
+      const existingDailyPrices = [...prevStats.dailyChickPrices];
+      const today = new Date().toISOString().split('T')[0];
+      const todayIndex = existingDailyPrices.findIndex(p => p.date === today);
+
+      if (todayIndex > -1) {
+        existingDailyPrices[todayIndex] = {
+          date: today,
+          stats: perChickExpensesDetail
+        };
+      } else {
+        existingDailyPrices.push({
+          date: today,
+          stats: perChickExpensesDetail
+        });
+        if (existingDailyPrices.length > 30) {
+          existingDailyPrices.shift();
+        }
+      }
+
+      return {
+        totalChicks,
+        totalMortality,
+        currentStock,
+        totalSales: totalSalesQuantity,
+        totalRevenue,
+        totalOutstanding,
+        totalFeedCost,
+        totalMedicineCost,
+        totalExpenses,
+        perChickExpenses: perChickExpensesDetail.perChickPrice,
+        mortalityRate,
+        dailyChickPrices: existingDailyPrices,
+      };
     });
-  }, [chickArrivals, mortalities, feedMedicines, sales, extraExpenses, extraExpenses]);
+  }, [chickArrivals, mortalities, feedMedicines, sales, extraExpenses]);
 
   // CRUD operations
   const addChickArrival = (arrival: Omit<ChickArrival, 'id' | 'createdAt'>) => {
@@ -281,12 +277,4 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       {children}
     </DataContext.Provider>
   );
-};
-
-export const useData = () => {
-  const context = useContext(DataContext);
-  if (context === undefined) {
-    throw new Error('useData must be used within a DataProvider');
-  }
-  return context;
 };

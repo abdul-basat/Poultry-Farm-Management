@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Calendar, User, DollarSign } from 'lucide-react';
-import { useData } from '../contexts/DataContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useData } from '../hooks/useData';
+import { useLanguage } from '../hooks/useLanguage';
 import { Sale } from '../types';
 import { formatCurrency } from '../utils/format';
 
@@ -80,6 +80,14 @@ const Sales: React.FC = () => {
     setFormData(newFormData);
   };
 
+interface CustomerSummary {
+  totalQuantity: number;
+  totalAmount: number;
+  totalReceived: number;
+  totalOutstanding: number;
+  salesCount: number;
+}
+
   // Group sales by customer
   const customerSummary = sales.reduce((acc, sale) => {
     if (!acc[sale.customerName]) {
@@ -99,7 +107,7 @@ const Sales: React.FC = () => {
     acc[sale.customerName].salesCount += 1;
     
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, CustomerSummary>);
 
   return (
     <div className="space-y-6">
@@ -192,7 +200,7 @@ const Sales: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(customerSummary).map(([customerName, summary]) => (
+              {Object.entries(customerSummary).map(([customerName, summary]: [string, CustomerSummary]) => (
                 <tr key={customerName}>
                   <td className="font-medium">{customerName}</td>
                   <td>{summary.totalQuantity.toLocaleString()}</td>

@@ -10,8 +10,8 @@ import {
   ShoppingCart
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { useData } from '../contexts/DataContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useData } from '../hooks/useData';
+import { useLanguage } from '../hooks/useLanguage';
 import { format, subDays, startOfDay } from 'date-fns';
 import { formatCurrency } from '../utils/format';
 import { useNavigate } from 'react-router-dom';

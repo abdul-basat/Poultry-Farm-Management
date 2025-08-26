@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useData } from '../contexts/DataContext';
+import { useLanguage } from '../hooks/useLanguage';
+import { useData } from '../hooks/useData';
 import { ExtraExpense } from '../types';
-import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ExtraExpenses: React.FC = () => {
   const { t, language } = useLanguage();

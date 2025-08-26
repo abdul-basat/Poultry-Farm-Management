@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode } from 'react';
 import { Language } from '../types';
 
 interface LanguageContextType {
@@ -18,7 +18,6 @@ const translations = {
     extraExpenses: 'Extra Expenses',
     reports: 'Reports',
     chickPriceTracker: 'Chick Price Tracker',
-    helpAndSupport: 'Help & Support',
     
     // Dashboard
     totalChicks: 'Total Chicks',
@@ -122,7 +121,6 @@ const translations = {
     reports: 'رپورٹس',
     extraExpenses: 'اضافی اخراجات',
     chickPriceTracker: 'چوزہ قیمت ٹریکر',
-    helpAndSupport: 'مدد اور معاونت',
     
     // Dashboard
     totalChicks: 'کل چوزے',
@@ -217,7 +215,7 @@ const translations = {
   }
 };
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
@@ -235,12 +233,4 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       {children}
     </LanguageContext.Provider>
   );
-};
-
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
 };
