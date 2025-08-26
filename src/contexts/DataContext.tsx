@@ -99,7 +99,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const currentStock = totalChicks - totalMortality - totalSalesQuantity;
     const totalRevenue = sales.reduce((sum, sale) => sum + sale.amountReceived, 0);
     const totalOutstanding = sales.reduce((sum, sale) => sum + sale.outstandingBalance, 0);
-    const totalArrivalCost = chickArrivals.reduce((sum, arrival) => sum + ((arrival.price || 0) * (arrival.quantity || 0)), 0);
+    const totalArrivalCost = chickArrivals.reduce((sum, arrival) => sum + (arrival.price || 0), 0);
     const totalFeedCost = feedMedicines.filter(item => item.type === 'feed').reduce((sum, item) => sum + item.cost, 0);
     const totalMedicineCost = feedMedicines.filter(item => item.type === 'medicine').reduce((sum, item) => sum + item.cost, 0);
     const totalExtraExpenses = extraExpenses.reduce((sum, exp) => sum + exp.amount, 0);
