@@ -187,7 +187,6 @@ const translations = {
     addNewExpense: 'نیا اخراجات شامل کریں',
     update: 'اپ ڈیٹ کریں',
     save: 'محفوظ کریں',
-    cancel: 'منسوخ کریں',
     deleteExpenseConfirmation: 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟',
     
     // Actions
