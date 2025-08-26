@@ -12,7 +12,6 @@ import Sales from './components/Sales';
 import Reports from './components/Reports';
 import ExtraExpenses from './components/ExtraExpenses';
 import ChickPriceTracker from './components/ChickPriceTracker';  // New import for ChickPriceTracker
-import Help from './components/Help';
 
 function App() {
   return (
@@ -30,7 +29,6 @@ function App() {
                 <Route path="/extra-expenses" element={<ExtraExpenses />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/chick-price" element={<ChickPriceTracker />} />  // New route for ChickPriceTracker
-                <Route path="/help" element={<Help />} />
               </Routes>
             </Layout>
           </Router>

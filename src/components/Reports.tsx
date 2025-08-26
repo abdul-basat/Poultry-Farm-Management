@@ -21,34 +21,41 @@ const Reports: React.FC = () => {
     const doc = new jsPDF();
     
     const fontBytes = await fetch(NastaliqTTF).then(res => res.arrayBuffer());
-    doc.addFileToVFS('MehrNastaliq.ttf', btoa(String.fromCharCode.apply(null, new Uint8Array(fontBytes))));
+    const uint8 = new Uint8Array(fontBytes);
+    let binary = '';
+    for (let i = 0; i < uint8.length; i++) {
+      binary += String.fromCharCode(uint8[i]);
+    }
+    const base64String = btoa(binary);
+    doc.addFileToVFS('MehrNastaliq.ttf', base64String);
     doc.addFont('MehrNastaliq.ttf', 'MehrNastaliq', 'normal');
 
-    // Choose font based on language
-    const font = language === 'ur' ? 'MehrNastaliq' : 'helvetica';
-    doc.setFont(font);
+    // Choose font based on language (use custom for Urdu else default)
     if (language === 'ur') {
+      doc.setFont('MehrNastaliq', 'normal');
       doc.setR2L(true);
     }
     
     // Title
     doc.setFontSize(20);
-    doc.text('Poultry Farm Management Report', 20, 20, { align: 'left' });
+    doc.text('Poultry Farm Management Report', 20, 20);
     doc.setFont('MehrNastaliq');
-    doc.text('پولٹری فارم منیجمینٹ رپورٹ', 190, 30, { align: 'right' });
-    doc.setFont(font);
+    doc.text('پولٹری فارم منیجمینٹ رپورٹ', 20, 30);
+    // Reset font to english default if needed
+    doc.setFont(language === 'ur' ? 'MehrNastaliq' : 'helvetica');
     
     // Date
     doc.setFontSize(12);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45, { align: 'left' });
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
     
     let yPosition = 60;
     
     // Summary Statistics
     doc.setFontSize(16);
-    doc.text('Summary / خلاصہ', 105, yPosition, { align: 'center' });
+    doc.text('Summary / خلاصہ', 20, yPosition);
     yPosition += 10;
     
+    doc.setFontSize(12);
     const summaryData = [
       ['Total Chicks / کل چوزے', stats.totalChicks.toLocaleString()],
       ['Current Stock / موجودہ اسٹاک', stats.currentStock.toLocaleString()],
@@ -61,13 +68,13 @@ const Reports: React.FC = () => {
       ['Medicine Cost / دوائی کی لاگت', formatCurrency(language, stats.totalMedicineCost)],
     ];
     
-    (doc as any).autoTable({
+    doc.autoTable({
       startY: yPosition,
       head: [['Metric / میٹرک', 'Value / قیمت']],
       body: summaryData,
       theme: 'grid',
-      headStyles: { fillColor: [59, 130, 246], font: 'helvetica' },
-      styles: { font: font, halign: language === 'ur' ? 'right' : 'left' },
+      headStyles: { fillColor: [59, 130, 246] },
+      styles: { font: 'MehrNastaliq' },
     });
     
     yPosition = (doc as any).lastAutoTable.finalY + 20;
@@ -75,7 +82,7 @@ const Reports: React.FC = () => {
     // Chick Arrivals
     if (chickArrivals.length > 0) {
       doc.setFontSize(16);
-      doc.text('Chick Arrivals / چوزوں کی آمد', 105, yPosition, { align: 'center' });
+      doc.text('Chick Arrivals / چوزوں کی آمد', 20, yPosition);
       yPosition += 10;
       
       const arrivalData = chickArrivals.map(arrival => [
@@ -85,24 +92,28 @@ const Reports: React.FC = () => {
         arrival.source || '-'
       ]);
       
-      (doc as any).autoTable({
+      doc.autoTable({
         startY: yPosition,
         head: [['Date / تاریخ', 'Batch / بیچ', 'Quantity / تعداد', 'Source / ذریعہ']],
         body: arrivalData,
         theme: 'grid',
-        headStyles: { fillColor: [34, 197, 94], font: 'helvetica' },
-        styles: { font: font, halign: language === 'ur' ? 'right' : 'left' },
+        headStyles: { fillColor: [34, 197, 94] },
+        styles: { font: 'MehrNastaliq' },
       });
       
       yPosition = (doc as any).lastAutoTable.finalY + 20;
     }
     
-    if (yPosition > 250) { doc.addPage(); yPosition = 20; }
+    // Add new page if needed
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
     
     // Mortality Records
     if (mortalities.length > 0) {
       doc.setFontSize(16);
-      doc.text('Mortality Records / اموات کا ریکارڈ', 105, yPosition, { align: 'center' });
+      doc.text('Mortality Records / اموات کا ریکارڈ', 20, yPosition);
       yPosition += 10;
       
       const mortalityData = mortalities.map(mortality => [
@@ -111,24 +122,28 @@ const Reports: React.FC = () => {
         mortality.notes || '-'
       ]);
       
-      (doc as any).autoTable({
+      doc.autoTable({
         startY: yPosition,
         head: [['Date / تاریخ', 'Quantity / تعداد', 'Notes / نوٹس']],
         body: mortalityData,
         theme: 'grid',
-        headStyles: { fillColor: [239, 68, 68], font: 'helvetica' },
-        styles: { font: font, halign: language === 'ur' ? 'right' : 'left' },
+        headStyles: { fillColor: [239, 68, 68] },
+        styles: { font: 'MehrNastaliq' },
       });
       
       yPosition = (doc as any).lastAutoTable.finalY + 20;
     }
     
-    if (yPosition > 250) { doc.addPage(); yPosition = 20; }
+    // Add new page if needed
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
     
     // Feed & Medicine Records
     if (feedMedicines.length > 0) {
       doc.setFontSize(16);
-      doc.text('Feed & Medicine Records / فیڈ اور دوائی کا ریکارڈ', 105, yPosition, { align: 'center' });
+      doc.text('Feed & Medicine Records / فیڈ اور دوائی کا ریکارڈ', 20, yPosition);
       yPosition += 10;
       
       const feedMedicineData = feedMedicines.map(item => [
@@ -140,24 +155,28 @@ const Reports: React.FC = () => {
         item.supplier || '-'
       ]);
       
-      (doc as any).autoTable({
+      doc.autoTable({
         startY: yPosition,
         head: [['Date / تاریخ', 'Type / قسم', 'Name / نام', 'Quantity / تعداد', 'Cost / قیمت', 'Supplier / سپلائر']],
         body: feedMedicineData,
         theme: 'grid',
-        headStyles: { fillColor: [245, 158, 11], font: 'helvetica' },
-        styles: { font: font, halign: language === 'ur' ? 'right' : 'left' },
+        headStyles: { fillColor: [245, 158, 11] },
+        styles: { font: 'MehrNastaliq' },
       });
       
       yPosition = (doc as any).lastAutoTable.finalY + 20;
     }
     
-    if (yPosition > 250) { doc.addPage(); yPosition = 20; }
+    // Add new page if needed
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
     
     // Sales Records
     if (sales.length > 0) {
       doc.setFontSize(16);
-      doc.text('Sales Records / فروخت کا ریکارڈ', 105, yPosition, { align: 'center' });
+      doc.text('Sales Records / فروخت کا ریکارڈ', 20, yPosition);
       yPosition += 10;
       
       const salesData = sales.map(sale => [
@@ -170,13 +189,13 @@ const Reports: React.FC = () => {
         formatCurrency(language, sale.outstandingBalance)
       ]);
       
-      (doc as any).autoTable({
+      doc.autoTable({
         startY: yPosition,
         head: [['Date / تاریخ', 'Customer / گاہک', 'Quantity / تعداد', 'Price/Unit / فی یونٹ قیمت', 'Total / کل', 'Received / وصول', 'Outstanding / باقی']],
         body: salesData,
         theme: 'grid',
-        headStyles: { fillColor: [147, 51, 234], font: 'helvetica' },
-        styles: { font: font, halign: language === 'ur' ? 'right' : 'left' },
+        headStyles: { fillColor: [147, 51, 234] },
+        styles: { font: 'MehrNastaliq' },
       });
     }
     
