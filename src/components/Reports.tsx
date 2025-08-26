@@ -4,7 +4,7 @@ import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import NastaliqTTF from '../assets/fonts/Mehr_Nastaliq_Web.ttf?url';
+import NastaliqTTF from '../assets/fonts/Mehr_Nastaliq_Web.ttf?inline';
 import { formatCurrency } from '../utils/format';
 
 declare module 'jspdf' {
@@ -18,189 +18,188 @@ const Reports: React.FC = () => {
   const { t, language } = useLanguage();
 
   const generatePDFReport = async () => {
-    const doc = new jsPDF();
-    
-    const fontBytes = await fetch(NastaliqTTF).then(res => res.arrayBuffer());
-    const uint8 = new Uint8Array(fontBytes);
-    let binary = '';
-    for (let i = 0; i < uint8.length; i++) {
-      binary += String.fromCharCode(uint8[i]);
-    }
-    const base64String = btoa(binary);
-    doc.addFileToVFS('MehrNastaliq.ttf', base64String);
-    doc.addFont('MehrNastaliq.ttf', 'MehrNastaliq', 'normal');
+    try {
+      const doc = new jsPDF();
 
-    // Choose font based on language (use custom for Urdu else default)
-    if (language === 'ur') {
-      doc.setFont('MehrNastaliq', 'normal');
-      doc.setR2L(true);
-    }
-    
-    // Title
-    doc.setFontSize(20);
-    doc.text('Poultry Farm Management Report', 20, 20);
-    doc.setFont('MehrNastaliq');
-    doc.text('پولٹری فارم منیجمینٹ رپورٹ', 20, 30);
-    // Reset font to english default if needed
-    doc.setFont(language === 'ur' ? 'MehrNastaliq' : 'helvetica');
-    
-    // Date
-    doc.setFontSize(12);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
-    
-    let yPosition = 60;
-    
-    // Summary Statistics
-    doc.setFontSize(16);
-    doc.text('Summary / خلاصہ', 20, yPosition);
-    yPosition += 10;
-    
-    doc.setFontSize(12);
-    const summaryData = [
-      ['Total Chicks / کل چوزے', stats.totalChicks.toLocaleString()],
-      ['Current Stock / موجودہ اسٹاک', stats.currentStock.toLocaleString()],
-      ['Total Mortality / کل اموات', stats.totalMortality.toLocaleString()],
-      ['Mortality Rate / اموات کی شرح', `${stats.mortalityRate.toFixed(1)}%`],
-      ['Total Sales / کل فروخت', stats.totalSales.toLocaleString()],
-      ['Total Revenue / کل آمدنی', formatCurrency(language, stats.totalRevenue)],
-      ['Outstanding Amount / باقی رقم', formatCurrency(language, stats.totalOutstanding)],
-      ['Feed Cost / فیڈ کی لاگت', formatCurrency(language, stats.totalFeedCost)],
-      ['Medicine Cost / دوائی کی لاگت', formatCurrency(language, stats.totalMedicineCost)],
-    ];
-    
-    doc.autoTable({
-      startY: yPosition,
-      head: [['Metric / میٹرک', 'Value / قیمت']],
-      body: summaryData,
-      theme: 'grid',
-      headStyles: { fillColor: [59, 130, 246] },
-      styles: { font: 'MehrNastaliq' },
-    });
-    
-    yPosition = (doc as any).lastAutoTable.finalY + 20;
-    
-    // Chick Arrivals
-    if (chickArrivals.length > 0) {
+      // The font is now a base64 data URL, so we extract the base64 part
+      const base64String = NastaliqTTF.split(',')[1];
+      doc.addFileToVFS('MehrNastaliq.ttf', base64String);
+      doc.addFont('MehrNastaliq.ttf', 'MehrNastaliq', 'normal');
+
+      // Choose font based on language (use custom for Urdu else default)
+      if (language === 'ur') {
+        doc.setFont('MehrNastaliq', 'normal');
+        doc.setR2L(true);
+      }
+      
+      // Title
+      doc.setFontSize(20);
+      doc.text('Poultry Farm Management Report', 20, 20);
+      doc.setFont('MehrNastaliq');
+      doc.text('پولٹری فارم منیجمینٹ رپورٹ', 20, 30);
+      // Reset font to english default if needed
+      doc.setFont(language === 'ur' ? 'MehrNastaliq' : 'helvetica');
+      
+      // Date
+      doc.setFontSize(12);
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
+      
+      let yPosition = 60;
+
+      // Summary Statistics
       doc.setFontSize(16);
-      doc.text('Chick Arrivals / چوزوں کی آمد', 20, yPosition);
+      doc.text('Summary / خلاصہ', 20, yPosition);
       yPosition += 10;
       
-      const arrivalData = chickArrivals.map(arrival => [
-        arrival.date,
-        arrival.batchNumber,
-        arrival.quantity.toLocaleString(),
-        arrival.source || '-'
-      ]);
+      doc.setFontSize(12);
+      const summaryData = [
+        ['Total Chicks / کل چوزے', stats.totalChicks.toLocaleString()],
+        ['Current Stock / موجودہ اسٹاک', stats.currentStock.toLocaleString()],
+        ['Total Mortality / کل اموات', stats.totalMortality.toLocaleString()],
+        ['Mortality Rate / اموات کی شرح', `${stats.mortalityRate.toFixed(1)}%`],
+        ['Total Sales / کل فروخت', stats.totalSales.toLocaleString()],
+        ['Total Revenue / کل آمدنی', formatCurrency(language, stats.totalRevenue)],
+        ['Outstanding Amount / باقی رقم', formatCurrency(language, stats.totalOutstanding)],
+        ['Feed Cost / فیڈ کی لاگت', formatCurrency(language, stats.totalFeedCost)],
+        ['Medicine Cost / دوائی کی لاگت', formatCurrency(language, stats.totalMedicineCost)],
+      ];
       
       doc.autoTable({
         startY: yPosition,
-        head: [['Date / تاریخ', 'Batch / بیچ', 'Quantity / تعداد', 'Source / ذریعہ']],
-        body: arrivalData,
+        head: [['Metric / میٹرک', 'Value / قیمت']],
+        body: summaryData,
         theme: 'grid',
-        headStyles: { fillColor: [34, 197, 94] },
+        headStyles: { fillColor: [59, 130, 246] },
         styles: { font: 'MehrNastaliq' },
       });
       
       yPosition = (doc as any).lastAutoTable.finalY + 20;
+      
+      // Chick Arrivals
+      if (chickArrivals.length > 0) {
+        doc.setFontSize(16);
+        doc.text('Chick Arrivals / چوزوں کی آمد', 20, yPosition);
+        yPosition += 10;
+
+        const arrivalData = chickArrivals.map(arrival => [
+          arrival.date,
+          arrival.batchNumber,
+          arrival.quantity.toLocaleString(),
+          arrival.source || '-'
+        ]);
+
+        doc.autoTable({
+          startY: yPosition,
+          head: [['Date / تاریخ', 'Batch / بیچ', 'Quantity / تعداد', 'Source / ذریعہ']],
+          body: arrivalData,
+          theme: 'grid',
+          headStyles: { fillColor: [34, 197, 94] },
+          styles: { font: 'MehrNastaliq' },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
+      
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      // Mortality Records
+      if (mortalities.length > 0) {
+        doc.setFontSize(16);
+        doc.text('Mortality Records / اموات کا ریکارڈ', 20, yPosition);
+        yPosition += 10;
+
+        const mortalityData = mortalities.map(mortality => [
+          mortality.date,
+          mortality.quantity.toLocaleString(),
+          mortality.notes || '-'
+        ]);
+
+        doc.autoTable({
+          startY: yPosition,
+          head: [['Date / تاریخ', 'Quantity / تعداد', 'Notes / نوٹس']],
+          body: mortalityData,
+          theme: 'grid',
+          headStyles: { fillColor: [239, 68, 68] },
+          styles: { font: 'MehrNastaliq' },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
+      
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      // Feed & Medicine Records
+      if (feedMedicines.length > 0) {
+        doc.setFontSize(16);
+        doc.text('Feed & Medicine Records / فیڈ اور دوائی کا ریکارڈ', 20, yPosition);
+        yPosition += 10;
+
+        const feedMedicineData = feedMedicines.map(item => [
+          item.date,
+          item.type === 'feed' ? 'Feed / فیڈ' : 'Medicine / دوائی',
+          item.name,
+          item.quantity.toString(),
+          formatCurrency(language, item.cost),
+          item.supplier || '-'
+        ]);
+
+        doc.autoTable({
+          startY: yPosition,
+          head: [['Date / تاریخ', 'Type / قسم', 'Name / نام', 'Quantity / تعداد', 'Cost / قیمت', 'Supplier / سپلائر']],
+          body: feedMedicineData,
+          theme: 'grid',
+          headStyles: { fillColor: [245, 158, 11] },
+          styles: { font: 'MehrNastaliq' },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
+
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Sales Records
+      if (sales.length > 0) {
+        doc.setFontSize(16);
+        doc.text('Sales Records / فروخت کا ریکارڈ', 20, yPosition);
+        yPosition += 10;
+
+        const salesData = sales.map(sale => [
+          sale.date,
+          sale.customerName,
+          sale.quantity.toLocaleString(),
+          formatCurrency(language, sale.pricePerUnit),
+          formatCurrency(language, sale.totalAmount),
+          formatCurrency(language, sale.amountReceived),
+          formatCurrency(language, sale.outstandingBalance)
+        ]);
+
+        doc.autoTable({
+          startY: yPosition,
+          head: [['Date / تاریخ', 'Customer / گاہک', 'Quantity / تعداد', 'Price/Unit / فی یونٹ قیمت', 'Total / کل', 'Received / وصول', 'Outstanding / باقی']],
+          body: salesData,
+          theme: 'grid',
+          headStyles: { fillColor: [147, 51, 234] },
+          styles: { font: 'MehrNastaliq' },
+        });
+      }
+
+      // Save the PDF
+      doc.save(`poultry-farm-report-${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
     }
-    
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    // Mortality Records
-    if (mortalities.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Mortality Records / اموات کا ریکارڈ', 20, yPosition);
-      yPosition += 10;
-      
-      const mortalityData = mortalities.map(mortality => [
-        mortality.date,
-        mortality.quantity.toLocaleString(),
-        mortality.notes || '-'
-      ]);
-      
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Quantity / تعداد', 'Notes / نوٹس']],
-        body: mortalityData,
-        theme: 'grid',
-        headStyles: { fillColor: [239, 68, 68] },
-        styles: { font: 'MehrNastaliq' },
-      });
-      
-      yPosition = (doc as any).lastAutoTable.finalY + 20;
-    }
-    
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    // Feed & Medicine Records
-    if (feedMedicines.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Feed & Medicine Records / فیڈ اور دوائی کا ریکارڈ', 20, yPosition);
-      yPosition += 10;
-      
-      const feedMedicineData = feedMedicines.map(item => [
-        item.date,
-        item.type === 'feed' ? 'Feed / فیڈ' : 'Medicine / دوائی',
-        item.name,
-        item.quantity.toString(),
-        formatCurrency(language, item.cost),
-        item.supplier || '-'
-      ]);
-      
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Type / قسم', 'Name / نام', 'Quantity / تعداد', 'Cost / قیمت', 'Supplier / سپلائر']],
-        body: feedMedicineData,
-        theme: 'grid',
-        headStyles: { fillColor: [245, 158, 11] },
-        styles: { font: 'MehrNastaliq' },
-      });
-      
-      yPosition = (doc as any).lastAutoTable.finalY + 20;
-    }
-    
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    // Sales Records
-    if (sales.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Sales Records / فروخت کا ریکارڈ', 20, yPosition);
-      yPosition += 10;
-      
-      const salesData = sales.map(sale => [
-        sale.date,
-        sale.customerName,
-        sale.quantity.toLocaleString(),
-        formatCurrency(language, sale.pricePerUnit),
-        formatCurrency(language, sale.totalAmount),
-        formatCurrency(language, sale.amountReceived),
-        formatCurrency(language, sale.outstandingBalance)
-      ]);
-      
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Customer / گاہک', 'Quantity / تعداد', 'Price/Unit / فی یونٹ قیمت', 'Total / کل', 'Received / وصول', 'Outstanding / باقی']],
-        body: salesData,
-        theme: 'grid',
-        headStyles: { fillColor: [147, 51, 234] },
-        styles: { font: 'MehrNastaliq' },
-      });
-    }
-    
-    // Save the PDF
-    doc.save(`poultry-farm-report-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   return (
