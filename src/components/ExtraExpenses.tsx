@@ -60,7 +60,7 @@ const ExtraExpenses: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm(language === 'ur' ? 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟' : 'Are you sure you want to delete this expense?')) {
+    if (window.confirm(t('deleteExpenseConfirmation'))) {
       deleteExtraExpense(id);
     }
   };
@@ -97,8 +97,8 @@ const ExtraExpenses: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className={`text-sm font-medium text-gray-600 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>{t('totalExtraExpenses')}</p>
-              <p className="text-2xl font-bold text-gray-900">{total.toLocaleString()} {language === 'ur' ? 'روپے' : 'PKR'}</p>
-              <p className="text-xs text-gray-500">{extraExpenses.length} {language === 'ur' ? 'ریکارڈز' : 'records'}</p>
+              <p className="text-2xl font-bold text-gray-900">{total.toLocaleString()} {language === 'ur' ? t('currencyPKR') : t('currencyPKR')}</p>
+              <p className="text-xs text-gray-500">{extraExpenses.length} {language === 'ur' ? t('records') : t('records')}</p>
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@ const ExtraExpenses: React.FC = () => {
           <tbody>
             {extraExpenses.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-6 text-gray-400">{language === 'ur' ? 'کوئی ریکارڈ نہیں' : 'No records found'}</td>
+                <td colSpan={4} className="text-center py-6 text-gray-400">{t('noRecordsFound')}</td>
               </tr>
             ) : (
               extraExpenses.map(exp => (
@@ -134,7 +134,7 @@ const ExtraExpenses: React.FC = () => {
                   <td>{exp.description}</td>
                   <td>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {exp.amount.toLocaleString()} {language === 'ur' ? 'روپے' : 'PKR'}
+                      {exp.amount.toLocaleString()} {t('currencyPKR')}
                     </span>
                   </td>
                   <td>
@@ -170,7 +170,7 @@ const ExtraExpenses: React.FC = () => {
           <div className="modal-content">
             <div className="p-6">
               <h3 className={`text-lg font-semibold text-gray-900 mb-4 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
-                {editId ? (language === 'ur' ? 'اخراجات ترمیم کریں' : 'Edit Expense') : (language === 'ur' ? 'نیا اخراجات شامل کریں' : 'Add New Expense')}
+                {editId ? t('editExpense') : t('addNewExpense')}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -218,8 +218,8 @@ const ExtraExpenses: React.FC = () => {
                   />
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <button type="submit" className="btn-success flex-1">{editId ? (language === 'ur' ? 'اپ ڈیٹ کریں' : 'Update') : (language === 'ur' ? 'محفوظ کریں' : 'Save')}</button>
-                  <button type="button" onClick={() => setShowForm(false)} className="btn-outline flex-1">{language === 'ur' ? 'منسوخ کریں' : 'Cancel'}</button>
+                  <button type="submit" className="btn-success flex-1">{editId ? t('update') : t('save')}</button>
+                  <button type="button" onClick={() => setShowForm(false)} className="btn-outline flex-1">{t('cancel')}</button>
                 </div>
               </form>
             </div>
@@ -230,4 +230,4 @@ const ExtraExpenses: React.FC = () => {
   );
 };
 
-export default ExtraExpenses; 
+export default ExtraExpenses;

@@ -4,6 +4,7 @@ export interface ChickArrival {
   quantity: number;
   batchNumber: string;
   source?: string;
+  price?: number;
   createdAt: string;
 }
 

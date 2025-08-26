@@ -24,13 +24,11 @@ const ChickPriceTracker: React.FC = () => {
   
   const getLastUpdatedText = (): string => {
     if (!stats.dailyChickPrices || stats.dailyChickPrices.length === 0) {
-      return language === 'ur' ? 'کوئی ڈیٹا دستیاب نہیں' : 'No data available';
+      return t('noDataAvailable');
     }
     
     const lastDate = stats.dailyChickPrices[stats.dailyChickPrices.length - 1].date;
-    return language === 'ur' 
-      ? `آخری اپ ڈیٹ: ${lastDate}` 
-      : `Last Updated: ${lastDate}`;
+    return `${t('lastUpdated')}: ${lastDate}`;
   };
   
   return (
@@ -62,10 +60,7 @@ const ChickPriceTracker: React.FC = () => {
                 {formatCurrency(stats.perChickExpenses)}
               </p>
               <p className="text-xs text-gray-500">
-                {language === 'ur' 
-                  ? `کل مرغیاں: ${formatNumber(stats.totalChicks)} | موجودہ اسٹاک: ${formatNumber(stats.currentStock)}`
-                  : `Total Chicks: ${formatNumber(stats.totalChicks)} | Current Stock: ${formatNumber(stats.currentStock)}`
-                }
+                {`${t('totalChicks')}: ${formatNumber(stats.totalChicks)} | ${t('currentStock')}: ${formatNumber(stats.currentStock)}`}
               </p>
             </div>
           </div>
@@ -84,10 +79,7 @@ const ChickPriceTracker: React.FC = () => {
                 {formatCurrency(stats.totalExpenses)}
               </p>
               <p className="text-xs text-gray-500">
-                {language === 'ur' 
-                  ? `مرغیاں فی قیمت: ${formatCurrency(stats.perChickExpenses)}`
-                  : `Per Chick Price: ${formatCurrency(stats.perChickExpenses)}`
-                }
+                {`${t('perChickExpenses')}: ${formatCurrency(stats.perChickExpenses)}`}
               </p>
             </div>
           </div>
@@ -106,10 +98,7 @@ const ChickPriceTracker: React.FC = () => {
                 {formatNumber(stats.totalChicks)}
               </p>
               <p className="text-xs text-gray-500">
-                {language === 'ur' 
-                  ? `موجودہ اسٹاک: ${formatNumber(stats.currentStock)}`
-                  : `Current Stock: ${formatNumber(stats.currentStock)}`
-                }
+                {`${t('currentStock')}: ${formatNumber(stats.currentStock)}`}
               </p>
             </div>
           </div>
@@ -209,7 +198,7 @@ const ChickPriceTracker: React.FC = () => {
               })
             ) : (
               <p className="text-gray-400 text-center py-4">
-                {language === 'ur' ? 'کوئی تاریخی ڈیٹا دستیاب نہیں' : 'No historical data available'}
+                {t('noHistoricalDataAvailable')}
               </p>
             )}
           </div>

@@ -17,7 +17,7 @@ const translations = {
     sales: 'Sales Management',
     extraExpenses: 'Extra Expenses',
     reports: 'Reports',
-    chickPriceTracker: 'Chick Price Tracker',  // New translation key
+    chickPriceTracker: 'Chick Price Tracker'
     
     // Dashboard
     totalChicks: 'Total Chicks',
@@ -42,6 +42,7 @@ const translations = {
     filter: 'Filter',
     export: 'Export',
     total: 'Total',
+    price: 'Price',
     
     // Chick Arrival
     batchNumber: 'Batch Number',
@@ -70,12 +71,46 @@ const translations = {
     outstandingBalance: 'Outstanding Balance',
     addSale: 'Add Sale Record',
     
+    // Extra Expenses
+    description: 'Description',
+    amount: 'Amount',
+    actions: 'Actions',
+    addExtraExpense: 'Add Extra Expense',
+    totalExtraExpenses: 'Total Extra Expenses',
+    currencyPKR: 'PKR',
+      records: 'records',
+      noRecordsFound: 'No records found',
+      editExpense: 'Edit Expense',
+      addNewExpense: 'Add New Expense',
+      update: 'Update',
+      save: 'Save',
+      cancel: 'Cancel',
+      deleteExpenseConfirmation: 'Are you sure you want to delete this expense?',
+    
     // Actions
     viewDetails: 'View Details',
     downloadPDF: 'Download PDF',
     generateReport: 'Generate Report',
     totalExpenses: 'Total Expenses',
     perChickExpenses: 'Per Chick Expenses',
+    
+    // Chick Price Tracker
+    currentPricePerChick: 'Current Price Per Chick',
+    expenseBreakdown: 'Expense Breakdown',
+    priceHistory: 'Price History',
+    detailedMetrics: 'Detailed Metrics',
+    feedMetrics: 'Feed Metrics',
+    medicineMetrics: 'Medicine Metrics',
+    expenseMetrics: 'Expense Metrics',
+    mortalityMetrics: 'Mortality Metrics',
+    totalFeedCost: 'Total Feed Cost',
+    totalMedicineCost: 'Total Medicine Cost',
+    totalExtraExpenses: 'Total Extra Expenses',
+    avgPerChick: 'Average Per Chick',
+    extra: 'Extra',
+    noDataAvailable: 'No data available',
+    lastUpdated: 'Last Updated',
+    noHistoricalDataAvailable: 'No historical data available',
   },
   ur: {
     // Navigation
@@ -111,6 +146,7 @@ const translations = {
     filter: 'فلٹر کریں',
     export: 'ایکسپورٹ کریں',
     total: 'کل',
+    price: 'قیمت',
     
     // Chick Arrival
     batchNumber: 'بیچ نمبر',
@@ -139,12 +175,46 @@ const translations = {
     outstandingBalance: 'باقی رقم',
     addSale: 'فروخت کا ریکارڈ شامل کریں',
     
+    // Extra Expenses
+    description: 'تفصیل',
+    amount: 'رقم',
+    actions: 'اقدامات',
+    addExtraExpense: 'اضافی اخراجات شامل کریں',
+    totalExtraExpenses: 'کل اضافی اخراجات',
+    currencyPKR: 'روپے',
+      records: 'ریکارڈز',
+      noRecordsFound: 'ریکارڈ موجود نہیں',
+      editExpense: 'اخراجات ترمیم کریں',
+      addNewExpense: 'نیا اخراجات شامل کریں',
+      update: 'اپ ڈیٹ کریں',
+      save: 'محفوظ کریں',
+      cancel: 'منسوخ کریں',
+      deleteExpenseConfirmation: 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟',
+    
     // Actions
     viewDetails: 'تفصیلات دیکھیں',
     downloadPDF: 'پی ڈی ایف ڈاؤن لوڈ کریں',
     generateReport: 'رپورٹ بنائیں',
     totalExpenses: 'کل اخراجات',
     perChickExpenses: 'فی چوزہ خرچ',
+    
+    // Chick Price Tracker
+    currentPricePerChick: 'فی چوزہ موجودہ قیمت',
+    expenseBreakdown: 'اخراجات کی تقسیم',
+    priceHistory: 'قیمت کی تاریخ',
+    detailedMetrics: 'تفصیلی اعداد و شمار',
+    feedMetrics: 'فیڈ کے اعداد و شمار',
+    medicineMetrics: 'دوائی کے اعداد و شمار',
+    expenseMetrics: 'اخراجات کے اعداد و شمار',
+    mortalityMetrics: 'اموات کے اعداد و شمار',
+    totalFeedCost: 'کل فیڈ کی لاگت',
+    totalMedicineCost: 'کل دوائی کی لاگت',
+    totalExtraExpenses: 'کل اضافی اخراجات',
+    avgPerChick: 'فی چوزہ اوسط',
+    extra: 'اضافی',
+    noDataAvailable: 'کوئی ڈیٹا دستیاب نہیں',
+    lastUpdated: 'آخری اپ ڈیٹ',
+    noHistoricalDataAvailable: 'کوئی تاریخی ڈیٹا دستیاب نہیں',
   }
 };
 

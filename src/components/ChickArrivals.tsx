@@ -12,6 +12,7 @@ const ChickArrivals: React.FC = () => {
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     quantity: '',
+    price: '',
     batchNumber: '',
     source: '',
   });
@@ -21,6 +22,7 @@ const ChickArrivals: React.FC = () => {
     const data = {
       date: formData.date,
       quantity: parseInt(formData.quantity),
+      price: formData.price ? parseFloat(formData.price) : undefined,
       batchNumber: formData.batchNumber,
       source: formData.source || undefined,
     };
@@ -36,6 +38,7 @@ const ChickArrivals: React.FC = () => {
     setFormData({
       date: new Date().toISOString().split('T')[0],
       quantity: '',
+      price: '',
       batchNumber: '',
       source: '',
     });
@@ -46,6 +49,7 @@ const ChickArrivals: React.FC = () => {
     setFormData({
       date: arrival.date,
       quantity: arrival.quantity.toString(),
+      price: arrival.price ? arrival.price.toString() : '',
       batchNumber: arrival.batchNumber,
       source: arrival.source || '',
     });
@@ -91,6 +95,7 @@ const ChickArrivals: React.FC = () => {
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('date')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('batchNumber')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('quantity')}</th>
+              <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('price')}</th>
               <th className={language === 'ur' ? 'urdu-text' : 'english-text'}>{t('source')}</th>
               <th>Actions</th>
             </tr>
@@ -105,6 +110,7 @@ const ChickArrivals: React.FC = () => {
                   </div>
                 </td>
                 <td className="font-medium">{arrival.batchNumber}</td>
+                <td>{arrival.price ? `${language === 'ur' ? 'روپے' : 'PKR'} ${arrival.price.toLocaleString()}` : '-'}</td>
                 <td>{arrival.quantity.toLocaleString()}</td>
                 <td>{arrival.source || '-'}</td>
                 <td>
@@ -165,6 +171,19 @@ const ChickArrivals: React.FC = () => {
                 </div>
                 <div>
                   <label className={`block text-sm font-medium text-gray-700 mb-1 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
+                    {t('cost')} ({language === 'ur' ? 'روپے' : 'PKR'})
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="input-field"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-medium text-gray-700 mb-1 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
                     {t('batchNumber')}
                   </label>
                   <input
@@ -197,6 +216,7 @@ const ChickArrivals: React.FC = () => {
                         quantity: '',
                         batchNumber: '',
                         source: '',
+                        price: '',
                       });
                     }}
                     className="btn-secondary"
