@@ -3,23 +3,9 @@ import { Download, FileText, Calendar } from 'lucide-react';
 import { useData } from '../hooks/useData';
 import { useLanguage } from '../hooks/useLanguage';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
-import { UserOptions } from 'jspdf-autotable';
+import { autoTable } from 'jspdf-autotable';
 import { formatCurrency } from '../utils/format';
 
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: UserOptions) => jsPDF;
-  }
-}
-
-// Add explicit initialization check
-const initializeAutoTable = () => {
-  // This is just to ensure the module is loaded
-  console.log('autoTable module loaded');
-};
-
-initializeAutoTable();
 
 const Reports: React.FC = () => {
   const { chickArrivals, mortalities, feedMedicines, sales, stats } = useData();
@@ -53,13 +39,10 @@ const Reports: React.FC = () => {
       
       const doc = new jsPDF();
       
-      // autoTable is attached to jsPDF prototype by the side-effect import above
-      (doc as any).autoTable = autoTable;
-      
       // Check if autoTable is available
-      console.log('autoTable plugin available:', typeof (doc as any).autoTable !== 'undefined');
+      console.log('autoTable plugin available:', typeof autoTable !== 'undefined');
       
-      if (typeof (doc as any).autoTable === 'undefined') {
+      if (typeof autoTable === 'undefined') {
         throw new Error('jsPDF autoTable plugin is not available. Please check the jspdf-autotable installation.');
       }
 
@@ -98,7 +81,7 @@ const Reports: React.FC = () => {
         [language === 'ur' ? 'دوائی کی لاگت' : 'Medicine Cost', formatCurrency(language, stats.totalMedicineCost)],
       ];
 
-      (doc as any).autoTable({
+      autoTable(doc, {
         startY: yPosition,
         head: [[language === 'ur' ? 'میٹرک' : 'Metric', language === 'ur' ? 'قیمت' : 'Value']],
         body: summaryData,
@@ -122,7 +105,7 @@ const Reports: React.FC = () => {
           arrival.source || '-'
         ]);
         
-        (doc as any).autoTable({
+        autoTable(doc, {
           startY: yPosition,
           head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'بیچ' : 'Batch', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'ذریعہ' : 'Source']],
           body: arrivalData,
@@ -152,7 +135,7 @@ const Reports: React.FC = () => {
           mortality.notes || '-'
         ]);
         
-        (doc as any).autoTable({
+        autoTable(doc, {
           startY: yPosition,
           head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'نوٹس' : 'Notes']],
           body: mortalityData,
@@ -185,7 +168,7 @@ const Reports: React.FC = () => {
           item.supplier || '-'
         ]);
         
-        (doc as any).autoTable({
+        autoTable(doc, {
           startY: yPosition,
           head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'قسم' : 'Type', language === 'ur' ? 'نام' : 'Name', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'قیمت' : 'Cost', language === 'ur' ? 'سپلائر' : 'Supplier']],
           body: feedMedicineData,
@@ -219,7 +202,7 @@ const Reports: React.FC = () => {
           formatCurrency(language, sale.outstandingBalance)
         ]);
         
-        (doc as any).autoTable({
+        autoTable(doc, {
           startY: yPosition,
           head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'گاہک' : 'Customer', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'فی یونٹ قیمت' : 'Price/Unit', language === 'ur' ? 'کل' : 'Total', language === 'ur' ? 'وصول' : 'Received', language === 'ur' ? 'باقی' : 'Outstanding']],
           body: salesData,
