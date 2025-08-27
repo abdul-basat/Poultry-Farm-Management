@@ -37,7 +37,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: t('sales'), href: '/sales', icon: TrendingUp, color: 'text-purple-600' },
     { name: t('reports'), href: '/reports', icon: FileText, color: 'text-indigo-600' },
     { name: t('chickPriceTracker'), href: '/chick-price', icon: TrendingUp, color: 'text-blue-600' },  // New navigation item for ChickPriceTracker
-    { name: t('help'), href: '/help', icon: HelpCircle, color: 'text-gray-600' },
   ];
 
   useEffect(() => {
@@ -88,6 +87,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+          <div className="mt-auto p-4">
+            <Link
+              to="/help"
+              className="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              <HelpCircle className="mr-3 h-5 w-5 text-gray-600" />
+              <span>{t('help')}</span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -124,6 +132,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+          <div className="mt-auto p-4">
+            <Link
+              to="/help"
+              className="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              <HelpCircle className="mr-3 h-5 w-5 text-gray-600" />
+              <span>{t('help')}</span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -135,6 +152,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
           >
             <Menu className="h-6 w-6" />
           </button>
