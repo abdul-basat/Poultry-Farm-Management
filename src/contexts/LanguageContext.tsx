@@ -84,8 +84,6 @@ const translations = {
     editExpense: 'Edit Expense',
     addNewExpense: 'Add New Expense',
     update: 'Update',
-    save: 'Save',
-    cancel: 'Cancel',
     deleteExpenseConfirmation: 'Are you sure you want to delete this expense?',
     
     // Actions
@@ -96,7 +94,7 @@ const translations = {
     perChickExpenses: 'Per Chick Expenses',
     
     // Chick Price Tracker
-    currentPricePerChick: 'Current Price Per Chick',
+    currentPricePerUnit: 'Current Price Per Unit',
     expenseBreakdown: 'Expense Breakdown',
     priceHistory: 'Price History',
     detailedMetrics: 'Detailed Metrics',
@@ -188,7 +186,6 @@ const translations = {
     editExpense: 'اخراجات ترمیم کریں',
     addNewExpense: 'نیا اخراجات شامل کریں',
     update: 'اپ ڈیٹ کریں',
-    save: 'محفوظ کریں',
     deleteExpenseConfirmation: 'کیا آپ واقعی اس اخراجات کو حذف کرنا چاہتے ہیں؟',
     
     // Actions
@@ -199,7 +196,7 @@ const translations = {
     perChickExpenses: 'فی چوزہ خرچ',
     
     // Chick Price Tracker
-    currentPricePerChick: 'فی چوزہ موجودہ قیمت',
+    currentPricePerUnit: 'فی چوزہ موجودہ قیمت',
     expenseBreakdown: 'اخراجات کی تقسیم',
     priceHistory: 'قیمت کی تاریخ',
     detailedMetrics: 'تفصیلی اعداد و شمار',

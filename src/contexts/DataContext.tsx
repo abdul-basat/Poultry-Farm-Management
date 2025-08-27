@@ -108,14 +108,17 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const mortalityRate = totalChicks > 0 ? (totalMortality / totalChicks) * 100 : 0;
       const totalExpenses = totalArrivalCost + totalFeedCost + totalMedicineCost + totalExtraExpenses;
 
+      // Fixed: For per-chick price calculation, we only consider mortality, not sales
+      // The per-chick price should not be affected by sales as those chicks have already incurred costs
+      const chicksForExpenseCalculation = totalChicks - totalMortality;
       const perChickExpensesDetail = {
         totalCost: totalExpenses,
         feedCost: totalFeedCost,
         medicineCost: totalMedicineCost,
         extraExpenses: totalExtraExpenses,
         mortalityCost: totalMortality,
-        currentStock,
-        perChickPrice: currentStock > 0 ? totalExpenses / currentStock : 0,
+        currentStock: chicksForExpenseCalculation,
+        perChickPrice: chicksForExpenseCalculation > 0 ? totalExpenses / chicksForExpenseCalculation : 0,
         calculationDate: new Date().toISOString().split('T')[0],
       };
 

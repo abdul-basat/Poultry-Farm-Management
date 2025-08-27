@@ -4,205 +4,241 @@ import { useData } from '../hooks/useData';
 import { useLanguage } from '../hooks/useLanguage';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import { UserOptions, Table } from 'jspdf-autotable';
-import NastaliqTTF from '../assets/fonts/Mehr_Nastaliq_Web.ttf?url';
+import { UserOptions } from 'jspdf-autotable';
 import { formatCurrency } from '../utils/format';
 
 declare module 'jspdf' {
   interface jsPDF {
     autoTable: (options: UserOptions) => jsPDF;
-    lastAutoTable: Table;
   }
 }
+
+// Add explicit initialization check
+const initializeAutoTable = () => {
+  // This is just to ensure the module is loaded
+  console.log('autoTable module loaded');
+};
+
+initializeAutoTable();
 
 const Reports: React.FC = () => {
   const { chickArrivals, mortalities, feedMedicines, sales, stats } = useData();
   const { t, language } = useLanguage();
+  const [isGenerating, setIsGenerating] = React.useState(false);
 
   const generatePDFReport = async () => {
-    const doc = new jsPDF();
-
-    const fontBytes = await fetch(NastaliqTTF).then(res => res.arrayBuffer());
-    const uint8 = new Uint8Array(fontBytes);
-    let binary = '';
-    for (let i = 0; i < uint8.length; i++) {
-      binary += String.fromCharCode(uint8[i]);
-    }
-    const base64String = btoa(binary);
-    doc.addFileToVFS('MehrNastaliq.ttf', base64String);
-    doc.addFont('MehrNastaliq.ttf', 'MehrNastaliq', 'normal');
-
-    // Choose font based on language (use custom for Urdu else default)
-    if (language === 'ur') {
-      doc.setFont('MehrNastaliq', 'normal');
-      doc.setR2L(true);
-    }
-
-    // Title
-    doc.setFontSize(20);
-    doc.text('Poultry Farm Management Report', 20, 20);
-    doc.setFont('MehrNastaliq');
-    doc.text('پولٹری فارم منیجمینٹ رپورٹ', 20, 30);
-    // Reset font to english default if needed
-    doc.setFont(language === 'ur' ? 'MehrNastaliq' : 'helvetica');
-
-    // Date
-    doc.setFontSize(12);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
-
-    let yPosition = 60;
-
-    // Summary Statistics
-    doc.setFontSize(16);
-    doc.text('Summary / خلاصہ', 20, yPosition);
-    yPosition += 10;
-
-    doc.setFontSize(12);
-    const summaryData = [
-      ['Total Chicks / کل چوزے', stats.totalChicks.toLocaleString()],
-      ['Current Stock / موجودہ اسٹاک', stats.currentStock.toLocaleString()],
-      ['Total Mortality / کل اموات', stats.totalMortality.toLocaleString()],
-      ['Mortality Rate / اموات کی شرح', `${stats.mortalityRate.toFixed(1)}%`],
-      ['Total Sales / کل فروخت', stats.totalSales.toLocaleString()],
-      ['Total Revenue / کل آمدنی', formatCurrency(language, stats.totalRevenue)],
-      ['Outstanding Amount / باقی رقم', formatCurrency(language, stats.totalOutstanding)],
-      ['Feed Cost / فیڈ کی لاگت', formatCurrency(language, stats.totalFeedCost)],
-      ['Medicine Cost / دوائی کی لاگت', formatCurrency(language, stats.totalMedicineCost)],
-    ];
-
-    doc.autoTable({
-      startY: yPosition,
-      head: [['Metric / میٹرک', 'Value / قیمت']],
-      body: summaryData,
-      theme: 'grid',
-      headStyles: { fillColor: [59, 130, 246] },
-      styles: { font: 'MehrNastaliq' },
-    });
-
-    yPosition = doc.lastAutoTable.finalY + 20;
-
-    // Chick Arrivals
-    if (chickArrivals.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Chick Arrivals / چوزوں کی آمد', 20, yPosition);
-      yPosition += 10;
+    setIsGenerating(true);
+    try {
+      console.log('Starting PDF generation...');
+      console.log('jsPDF available:', typeof jsPDF !== 'undefined');
       
-      const arrivalData = chickArrivals.map(arrival => [
-        arrival.date,
-        arrival.batchNumber,
-        arrival.quantity.toLocaleString(),
-        arrival.source || '-'
-      ]);
+      if (typeof jsPDF === 'undefined') {
+        throw new Error('jsPDF library is not available');
+      }
       
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Batch / بیچ', 'Quantity / تعداد', 'Source / ذریعہ']],
-        body: arrivalData,
-        theme: 'grid',
-        headStyles: { fillColor: [34, 197, 94] },
-        styles: { font: 'MehrNastaliq' },
+      console.log('Data status:', {
+        chickArrivals: chickArrivals.length,
+        mortalities: mortalities.length,
+        feedMedicines: feedMedicines.length,
+        sales: sales.length,
+        stats: stats
       });
       
-      yPosition = doc.lastAutoTable.finalY + 20;
-    }
+      // Check if there's any data to generate a report from
+      if (chickArrivals.length === 0 && mortalities.length === 0 && feedMedicines.length === 0 && sales.length === 0) {
+        alert('No data available to generate a report. Please add some records first.');
+        setIsGenerating(false);
+        return;
+      }
+      
+      const doc = new jsPDF();
+      
+      // autoTable is attached to jsPDF prototype by the side-effect import above
+      (doc as any).autoTable = autoTable;
+      
+      // Check if autoTable is available
+      console.log('autoTable plugin available:', typeof (doc as any).autoTable !== 'undefined');
+      
+      if (typeof (doc as any).autoTable === 'undefined') {
+        throw new Error('jsPDF autoTable plugin is not available. Please check the jspdf-autotable installation.');
+      }
 
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
+      // Set a standard font that's always available
+      doc.setFont('helvetica');
 
-    // Mortality Records
-    if (mortalities.length > 0) {
+      // Title
+      doc.setFontSize(20);
+      if (language === 'ur') {
+        doc.text('پولٹری فارم منیجمینٹ رپورٹ', 20, 20);
+      } else {
+        doc.text('Poultry Farm Management Report', 20, 20);
+      }
+
+      // Date
+      doc.setFontSize(12);
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
+
+      let yPosition = 60;
+
+      // Summary Statistics
       doc.setFontSize(16);
-      doc.text('Mortality Records / اموات کا ریکارڈ', 20, yPosition);
+      doc.text(language === 'ur' ? 'خلاصہ' : 'Summary', 20, yPosition);
       yPosition += 10;
-      
-      const mortalityData = mortalities.map(mortality => [
-        mortality.date,
-        mortality.quantity.toLocaleString(),
-        mortality.notes || '-'
-      ]);
-      
-      doc.autoTable({
+
+      doc.setFontSize(12);
+      const summaryData = [
+        [language === 'ur' ? 'کل چوزے' : 'Total Chicks', stats.totalChicks.toLocaleString()],
+        [language === 'ur' ? 'موجودہ اسٹاک' : 'Current Stock', stats.currentStock.toLocaleString()],
+        [language === 'ur' ? 'کل اموات' : 'Total Mortality', stats.totalMortality.toLocaleString()],
+        [language === 'ur' ? 'اموات کی شرح' : 'Mortality Rate', `${stats.mortalityRate.toFixed(1)}%`],
+        [language === 'ur' ? 'کل فروخت' : 'Total Sales', stats.totalSales.toLocaleString()],
+        [language === 'ur' ? 'کل آمدنی' : 'Total Revenue', formatCurrency(language, stats.totalRevenue)],
+        [language === 'ur' ? 'باقی رقم' : 'Outstanding Amount', formatCurrency(language, stats.totalOutstanding)],
+        [language === 'ur' ? 'فیڈ کی لاگت' : 'Feed Cost', formatCurrency(language, stats.totalFeedCost)],
+        [language === 'ur' ? 'دوائی کی لاگت' : 'Medicine Cost', formatCurrency(language, stats.totalMedicineCost)],
+      ];
+
+      (doc as any).autoTable({
         startY: yPosition,
-        head: [['Date / تاریخ', 'Quantity / تعداد', 'Notes / نوٹس']],
-        body: mortalityData,
+        head: [[language === 'ur' ? 'میٹرک' : 'Metric', language === 'ur' ? 'قیمت' : 'Value']],
+        body: summaryData,
         theme: 'grid',
-        headStyles: { fillColor: [239, 68, 68] },
-        styles: { font: 'MehrNastaliq' },
+        headStyles: { fillColor: [59, 130, 246] },
+        styles: { font: 'helvetica' },
       });
-      
-      yPosition = doc.lastAutoTable.finalY + 20;
-    }
 
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
+      yPosition = (doc as any).lastAutoTable.finalY + 20;
 
-    // Feed & Medicine Records
-    if (feedMedicines.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Feed & Medicine Records / فیڈ اور دوائی کا ریکارڈ', 20, yPosition);
-      yPosition += 10;
-      
-      const feedMedicineData = feedMedicines.map(item => [
-        item.date,
-        item.type === 'feed' ? 'Feed / فیڈ' : 'Medicine / دوائی',
-        item.name,
-        item.quantity.toString(),
-        formatCurrency(language, item.cost),
-        item.supplier || '-'
-      ]);
-      
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Type / قسم', 'Name / نام', 'Quantity / تعداد', 'Cost / قیمت', 'Supplier / سپلائر']],
-        body: feedMedicineData,
-        theme: 'grid',
-        headStyles: { fillColor: [245, 158, 11] },
-        styles: { font: 'MehrNastaliq' },
-      });
-      
-      yPosition = doc.lastAutoTable.finalY + 20;
-    }
+      // Chick Arrivals
+      if (chickArrivals.length > 0) {
+        doc.setFontSize(16);
+        doc.text(language === 'ur' ? 'چوزوں کی آمد' : 'Chick Arrivals', 20, yPosition);
+        yPosition += 10;
+        
+        const arrivalData = chickArrivals.map(arrival => [
+          arrival.date,
+          arrival.batchNumber,
+          arrival.quantity.toLocaleString(),
+          arrival.source || '-'
+        ]);
+        
+        (doc as any).autoTable({
+          startY: yPosition,
+          head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'بیچ' : 'Batch', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'ذریعہ' : 'Source']],
+          body: arrivalData,
+          theme: 'grid',
+          headStyles: { fillColor: [34, 197, 94] },
+          styles: { font: 'helvetica' },
+        });
+        
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
 
-    // Add new page if needed
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
 
-    // Sales Records
-    if (sales.length > 0) {
-      doc.setFontSize(16);
-      doc.text('Sales Records / فروخت کا ریکارڈ', 20, yPosition);
-      yPosition += 10;
-      
-      const salesData = sales.map(sale => [
-        sale.date,
-        sale.customerName,
-        sale.quantity.toLocaleString(),
-        formatCurrency(language, sale.pricePerUnit),
-        formatCurrency(language, sale.totalAmount),
-        formatCurrency(language, sale.amountReceived),
-        formatCurrency(language, sale.outstandingBalance)
-      ]);
-      
-      doc.autoTable({
-        startY: yPosition,
-        head: [['Date / تاریخ', 'Customer / گاہک', 'Quantity / تعداد', 'Price/Unit / فی یونٹ قیمت', 'Total / کل', 'Received / وصول', 'Outstanding / باقی']],
-        body: salesData,
-        theme: 'grid',
-        headStyles: { fillColor: [147, 51, 234] },
-        styles: { font: 'MehrNastaliq' },
-      });
-    }
+      // Mortality Records
+      if (mortalities.length > 0) {
+        doc.setFontSize(16);
+        doc.text(language === 'ur' ? 'اموات کا ریکارڈ' : 'Mortality Records', 20, yPosition);
+        yPosition += 10;
+        
+        const mortalityData = mortalities.map(mortality => [
+          mortality.date,
+          mortality.quantity.toLocaleString(),
+          mortality.notes || '-'
+        ]);
+        
+        (doc as any).autoTable({
+          startY: yPosition,
+          head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'نوٹس' : 'Notes']],
+          body: mortalityData,
+          theme: 'grid',
+          headStyles: { fillColor: [239, 68, 68] },
+          styles: { font: 'helvetica' },
+        });
+        
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
 
-    // Save the PDF
-    doc.save(`poultry-farm-report-${new Date().toISOString().split('T')[0]}.pdf`);
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Feed & Medicine Records
+      if (feedMedicines.length > 0) {
+        doc.setFontSize(16);
+        doc.text(language === 'ur' ? 'فیڈ اور دوائی کا ریکارڈ' : 'Feed & Medicine Records', 20, yPosition);
+        yPosition += 10;
+        
+        const feedMedicineData = feedMedicines.map(item => [
+          item.date,
+          item.type === 'feed' ? (language === 'ur' ? 'فیڈ' : 'Feed') : (language === 'ur' ? 'دوائی' : 'Medicine'),
+          item.name,
+          item.cost.toString(), // Using cost instead of quantity since FeedMedicine doesn't have quantity
+          formatCurrency(language, item.cost),
+          item.supplier || '-'
+        ]);
+        
+        (doc as any).autoTable({
+          startY: yPosition,
+          head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'قسم' : 'Type', language === 'ur' ? 'نام' : 'Name', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'قیمت' : 'Cost', language === 'ur' ? 'سپلائر' : 'Supplier']],
+          body: feedMedicineData,
+          theme: 'grid',
+          headStyles: { fillColor: [245, 158, 11] },
+          styles: { font: 'helvetica' },
+        });
+        
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
+
+      // Add new page if needed
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Sales Records
+      if (sales.length > 0) {
+        doc.setFontSize(16);
+        doc.text(language === 'ur' ? 'فروخت کا ریکارڈ' : 'Sales Records', 20, yPosition);
+        yPosition += 10;
+        
+        const salesData = sales.map(sale => [
+          sale.date,
+          sale.customerName,
+          sale.quantity.toLocaleString(),
+          formatCurrency(language, sale.pricePerUnit),
+          formatCurrency(language, sale.totalAmount),
+          formatCurrency(language, sale.amountReceived),
+          formatCurrency(language, sale.outstandingBalance)
+        ]);
+        
+        (doc as any).autoTable({
+          startY: yPosition,
+          head: [[language === 'ur' ? 'تاریخ' : 'Date', language === 'ur' ? 'گاہک' : 'Customer', language === 'ur' ? 'تعداد' : 'Quantity', language === 'ur' ? 'فی یونٹ قیمت' : 'Price/Unit', language === 'ur' ? 'کل' : 'Total', language === 'ur' ? 'وصول' : 'Received', language === 'ur' ? 'باقی' : 'Outstanding']],
+          body: salesData,
+          theme: 'grid',
+          headStyles: { fillColor: [147, 51, 234] },
+          styles: { font: 'helvetica' },
+        });
+      }
+
+      // Save the PDF
+      console.log('Saving PDF...');
+      doc.save(`poultry-farm-report-${new Date().toISOString().split('T')[0]}.pdf`);
+      console.log('PDF generated successfully');
+    } catch (error) {
+      console.error('Error generating PDF report:', error);
+      alert('Error generating PDF report. Please check the console for details.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -219,11 +255,12 @@ const Reports: React.FC = () => {
         </div>
         <button
           onClick={generatePDFReport}
-          className="btn-primary flex items-center gap-2"
+          disabled={isGenerating}
+          className={`flex items-center gap-2 ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Download className="h-4 w-4" />
           <span className={language === 'ur' ? 'urdu-text' : 'english-text'}>
-            {t('downloadPDF')}
+            {isGenerating ? (language === 'ur' ? 'تیار کیا جا رہا ہے...' : 'Generating...') : t('downloadPDF')}
           </span>
         </button>
       </div>

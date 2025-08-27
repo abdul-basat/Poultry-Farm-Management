@@ -145,7 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className={language === 'ur' ? 'lg:pr-64' : 'lg:pl-64'}>
+      <div className={`flex flex-col min-h-screen ${language === 'ur' ? 'lg:pr-64' : 'lg:pl-64'}`}>
         {/* Top bar */}
         <div className="sticky top-0 z-40 flex h-16 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
@@ -183,7 +183,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Page content */}
-        <main className="py-6 pb-12"> {/* Added bottom padding to prevent content from being hidden behind footer */}
+        <main className="flex-grow py-6">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {children}
           </div>

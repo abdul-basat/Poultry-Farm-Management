@@ -9,7 +9,7 @@ import {
   Activity,
   ShoppingCart
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useData } from '../hooks/useData';
 import { useLanguage } from '../hooks/useLanguage';
 import { format, subDays, startOfDay } from 'date-fns';
@@ -45,6 +45,7 @@ const Dashboard: React.FC = () => {
   const expenseData = [
     { name: t('feed'), value: stats.totalFeedCost, color: '#f59e0b' },
     { name: t('medicine'), value: stats.totalMedicineCost, color: '#ef4444' },
+    { name: t('extra'), value: extraExpenses.reduce((sum, exp) => sum + exp.amount, 0), color: '#8b5cf6' },
   ];
 
   // Combine all expenses for modal table
@@ -192,7 +193,7 @@ const Dashboard: React.FC = () => {
         {/* Expense Breakdown */}
         <div className="card">
           <h3 className={`text-lg font-semibold text-gray-900 mb-4 ${language === 'ur' ? 'urdu-text' : 'english-text'}`}>
-            Expense Breakdown
+            {t('expenseBreakdown')}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -200,17 +201,35 @@ const Dashboard: React.FC = () => {
                 data={expenseData}
                 cx="50%"
                 cy="50%"
-                labelLine={false}
-                label={({ name, value }) => `${name}: ${formatCurrency(language, value)}`}
-                outerRadius={80}
+                labelLine={language === 'en' ? true : false}
+                label={language === 'en' ? ({name, value, percent}) => `${(percent * 100).toFixed(0)}%` : false}
+                outerRadius={language === 'en' ? 80 : 90}
                 fill="#8884d8"
                 dataKey="value"
+                nameKey="name"
               >
                 {expenseData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip 
+                formatter={(value) => formatCurrency(language, Number(value))} 
+              />
+              <Legend 
+                layout={language === 'ur' ? "vertical" : "horizontal"}
+                align={language === 'ur' ? 'right' : 'center'}
+                verticalAlign={language === 'ur' ? 'middle' : 'bottom'}
+                formatter={(value, entry, index) => {
+                  if (index >= 0 && index < expenseData.length) {
+                    return (
+                      <span className={language === 'ur' ? 'urdu-text' : ''}>
+                        {value}: {formatCurrency(language, expenseData[index].value)}
+                      </span>
+                    );
+                  }
+                  return value;
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

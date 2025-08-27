@@ -3,7 +3,7 @@ import { FaFacebookF, FaWhatsapp, FaLinkedinIn, FaGlobe, FaEnvelope } from 'reac
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-2 text-sm border-t border-gray-200 dark:border-gray-700 fixed bottom-0 left-0 right-0 z-10">
+    <footer className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-2 text-sm border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <p className="text-xs">© {new Date().getFullYear()} | Developed by Abdul Basit</p>
         <div className="flex gap-3 text-sm">
